@@ -18,42 +18,34 @@ using System.Windows.Input;
 
 namespace Lab.UI.ViewModel
 {
-    public class LabTestDetailViewModel : ViewModelBase, ILabTestDetailViewModel
+    public class LabTestDetailViewModel :DetailViewModelBase, ILabTestDetailViewModel
     {
         private ILabTestRepository _labTestRespository;
-        private readonly IEventAggregator _eventAggregator;
+
         private LabTestWrapper labTest;
-        private bool hasChanges;
         private IMessageService _messageService;
         private ILookupDataService _lookupDataService;
         private LabTestRefernceRangeWrapper selectedReferenceRange;
 
-
-
-
         public LabTestDetailViewModel(ILabTestRepository labTestRepository,
             IEventAggregator eventAggregator,
             IMessageService messageService,
-            ILookupDataService lookupDataService)
+            ILookupDataService lookupDataService):base(eventAggregator)
         {
             _labTestRespository = labTestRepository;
-            _eventAggregator = eventAggregator;
 
             _messageService = messageService;
             CdiscTestCds = new ObservableCollection<LookupItem>();
+            Units = new ObservableCollection<LookupItem>();
             _lookupDataService = lookupDataService;
             ReferenceRanges = new ObservableCollection<LabTestRefernceRangeWrapper>();
-
-            SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExectute);
-            DeleteCommand = new DelegateCommand(OnDeleteExecute, OnDeleteCanExectute);
             AddReferenceRangeCommand = new DelegateCommand(OnAddReferenceRangeExecute);
             RemoveReferenceRangeCommand = new DelegateCommand(OnRemoveReferenceRangeExecute, CanRemoveReferenceRangeExecute);
 
         }
 
-
-        public ICommand DeleteCommand { get; }
         public ObservableCollection<LookupItem> CdiscTestCds { get; }
+        public ObservableCollection<LookupItem> Units { get; }
         public ObservableCollection<LabTestRefernceRangeWrapper> ReferenceRanges { get; }
         public LabTestRefernceRangeWrapper SelectedReferenceRange
         {
@@ -66,24 +58,8 @@ namespace Lab.UI.ViewModel
             }
         }
 
-        public ICommand SaveCommand { get; }
         public ICommand AddReferenceRangeCommand { get; }
         public ICommand RemoveReferenceRangeCommand { get; }
-
-        public bool HasChanges
-        {
-            get { return hasChanges; }
-            set
-            {
-                if (hasChanges != value)
-                {
-                    hasChanges = value;
-                    OnPropertyChanged();
-
-                    ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
-                }
-            }
-        }
 
         public LabTestWrapper LabTest
         {
@@ -95,7 +71,7 @@ namespace Lab.UI.ViewModel
             }
         }
 
-        public async Task LoadAsync(int? testId)
+        public override async Task LoadAsync(int? testId)
         {
             var labTest = testId.HasValue ? await _labTestRespository.GetByIdAsync(testId.Value)
                 : CreateNewLabTest();
@@ -103,9 +79,8 @@ namespace Lab.UI.ViewModel
             InitLabTest(labTest);
             InitLabTestReferenceRanges(labTest.ReferenceRanges);
 
-
             await LoadCdiscTestCodes();
-
+            await LoadUnits();
         }
 
         private void InitLabTestReferenceRanges(ICollection<LabTestRefRange> ranges)
@@ -166,16 +141,25 @@ namespace Lab.UI.ViewModel
             }
         }
 
+        private async Task LoadUnits()
+        {
+            Units.Clear();
+            Units.Add(new NullLookupItem() { Display = "-none-" });
+            var units = await _lookupDataService.GetUnitsLookupAsync();
+            foreach (var unit in units)
+            {
+                Units.Add(unit);
+            }
+        }
 
-
-        private async void OnSaveExecute()
+        protected override async void OnSaveExecute()
         {
             await _labTestRespository.SaveAsync();
             HasChanges = _labTestRespository.HasChanges();
-            _eventAggregator.GetEvent<LabTestSavedEvent>().Publish(new AfterLabTestSavedEventArgs() { Id = LabTest.Id, Display = LabTest.TestName });
+            RaiseDetailSavedEvent(LabTest.Id, labTest.TestName);
         }
 
-        private bool OnSaveCanExectute()
+        protected override bool OnSaveCanExectute()
         {
             return LabTest != null && !LabTest.HasErrors && HasChanges 
                 && ReferenceRanges.All(x=>!x.HasErrors);
@@ -187,21 +171,17 @@ namespace Lab.UI.ViewModel
             _labTestRespository.Add(test);
             return test;
         }
-        private bool OnDeleteCanExectute()
-        {
-            return true;
-        }
 
-        private async void OnDeleteExecute()
-        {
 
+        protected override async void OnDeleteExecute()
+        {
             if (_messageService.ShowOkCancelDialog($"Are you sure you want to delete {LabTest.Model.TestName}?", "Confirm delete") ==
                 MessageDialogResult.Cancel)
                 return;
 
             _labTestRespository.Remove(LabTest.Model);
             await _labTestRespository.SaveAsync();
-            _eventAggregator.GetEvent<AfterLabTestDeletedEvent>().Publish(LabTest.Id);
+            RaiseDetailDeletedEvent(LabTest.Id);
         }
 
         private void OnRemoveReferenceRangeExecute()
@@ -220,7 +200,7 @@ namespace Lab.UI.ViewModel
             range.PropertyChanged += LabTestReferenceRangesWrapper_PropertyChanged;
             ReferenceRanges.Add(range);
             LabTest.Model.ReferenceRanges.Add(range.Model);
-            range.Sex = string.Empty;
+            range.Sex = Sex.All;
         }
         private bool CanRemoveReferenceRangeExecute()
         {

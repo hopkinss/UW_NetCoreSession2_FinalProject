@@ -6,13 +6,14 @@ using System.Text;
 
 namespace Lab.UI.Events
 {
-    public class LabTestSavedEvent: PubSubEvent<AfterLabTestSavedEventArgs>
+    public class AfterDetailSavedEvent: PubSubEvent<AfterDetailSavedEventArgs>
     {
     }
 
-    public class AfterLabTestSavedEventArgs
+    public class AfterDetailSavedEventArgs
     {
         public int Id { get; set; }
         public string Display { get; set; }
+        public string ViewModelName { get; set; }
     }
 }

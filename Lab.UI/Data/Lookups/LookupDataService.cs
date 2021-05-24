@@ -35,5 +35,14 @@ namespace Lab.UI.Data.Lookups
                     .Select(x => new LookupItem { Id = x.Id, Display = x.Name }).ToListAsync();
             }
         }
+
+        public async Task<IEnumerable<LookupItem>> GetUnitsLookupAsync()
+        {
+            using (var c = _context())
+            {
+                return await c.Units.AsNoTracking()
+                    .Select(x => new LookupItem { Id = x.Id, Display = x.Name }).ToListAsync();
+            }
+        }
     }
 }

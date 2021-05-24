@@ -54,12 +54,14 @@
     <SubType>Code</SubType>
   </Compile>
   <Compile Include="Data\Lookups\ILookupDataService.cs" />
+  <Compile Include="Data\Respository\GenericRespository.cs" />
+  <Compile Include="Data\Respository\IGenericRespository.cs" />
   <Compile Include="Data\Respository\ILabTestRepository.cs" />
   <Compile Include="Data\Respository\LabTestRepository.cs" />
   <Compile Include="Data\Lookups\LookupDataService.cs" />
-  <Compile Include="Events\AfterLabTestDeletedEvent.cs" />
-  <Compile Include="Events\LabTestSavedEvent.cs" />
-  <Compile Include="Events\OpenLabTestDetailViewEvent.cs" />
+  <Compile Include="Events\AfterDetailDeletedEvent.cs" />
+  <Compile Include="Events\AfterDetailSavedEvent.cs" />
+  <Compile Include="Events\OpenDetailViewEvent.cs" />
   <Compile Include="MainWindow.xaml.cs">
     <DependentUpon>MainWindow.xaml</DependentUpon>
     <SubType>Code</SubType>
@@ -72,6 +74,8 @@
   <Compile Include="Utility\EnumBindingExtension.cs" />
   <Compile Include="Utility\IMessageService.cs" />
   <Compile Include="Utility\MessageService.cs" />
+  <Compile Include="ViewModel\DetailViewModelBase.cs" />
+  <Compile Include="ViewModel\IDetailViewModel.cs" />
   <Compile Include="ViewModel\ILabTestDetailViewModel.cs" />
   <Compile Include="ViewModel\ILabTestViewModel.cs" />
   <Compile Include="ViewModel\LabTestDetailViewModel.cs" />

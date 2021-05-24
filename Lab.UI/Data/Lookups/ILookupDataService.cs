@@ -7,6 +7,7 @@ namespace Lab.UI.Data.Lookups
     public interface ILookupDataService
     {
         Task<IEnumerable<LookupItem>> GetCdiscTestCodeLookupAsync();
+        Task<IEnumerable<LookupItem>> GetUnitsLookupAsync();
         Task<IEnumerable<LookupItem>> GetLabLookupAsync();
     }
 }

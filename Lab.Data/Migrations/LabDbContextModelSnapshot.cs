@@ -78,12 +78,14 @@ namespace Lab.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Unit")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("UnitId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CdiscTestCdId");
+
+                    b.HasIndex("UnitId");
 
                     b.ToTable("LabTests");
 
@@ -92,29 +94,25 @@ namespace Lab.Data.Migrations
                         {
                             Id = 1,
                             Specimen = 0,
-                            TestName = "Hemoglobin",
-                            Unit = "mg/dL"
+                            TestName = "Hemoglobin"
                         },
                         new
                         {
                             Id = 2,
                             Specimen = 0,
-                            TestName = "Hematocrit",
-                            Unit = "%"
+                            TestName = "Hematocrit"
                         },
                         new
                         {
                             Id = 3,
                             Specimen = 0,
-                            TestName = "Red Blood Cell Count",
-                            Unit = "10^6/uL"
+                            TestName = "Red Blood Cell Count"
                         },
                         new
                         {
                             Id = 4,
                             Specimen = 1,
-                            TestName = "Calcium",
-                            Unit = "mg/dL"
+                            TestName = "Calcium"
                         });
                 });
 
@@ -125,17 +123,17 @@ namespace Lab.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<double>("LLN")
-                        .HasColumnType("float");
+                    b.Property<string>("LLN")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("LabTestId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Sex")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Sex")
+                        .HasColumnType("int");
 
-                    b.Property<double>("ULN")
-                        .HasColumnType("float");
+                    b.Property<string>("ULN")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -147,10 +145,49 @@ namespace Lab.Data.Migrations
                         new
                         {
                             Id = 1,
-                            LLN = 12.5,
+                            LLN = "12.5",
                             LabTestId = 1,
-                            Sex = "Male",
-                            ULN = 17.0
+                            Sex = 0,
+                            ULN = "17.0"
+                        });
+                });
+
+            modelBuilder.Entity("Lab.Model.Unit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Units");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "10^6 cell/uL"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "mg/dL"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "%"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "ng/dL"
                         });
                 });
 
@@ -159,6 +196,10 @@ namespace Lab.Data.Migrations
                     b.HasOne("Lab.Model.CdiscTestCd", "CdiscTestCd")
                         .WithMany()
                         .HasForeignKey("CdiscTestCdId");
+
+                    b.HasOne("Lab.Model.Unit", "LabTestUnit")
+                        .WithMany()
+                        .HasForeignKey("UnitId");
                 });
 
             modelBuilder.Entity("Lab.Model.LabTestRefRange", b =>

@@ -12,7 +12,7 @@ namespace Lab.UI.ViewModel
     {
         private IEventAggregator _eventAggregator;
         private Func<ILabTestDetailViewModel> _labTestDetailViewModelCreator;
-        private ILabTestDetailViewModel labTestDetailViewModel;
+        private IDetailViewModel detailViewModel;
         private IMessageService _messageService;
 
         public MainViewModel(ILabTestViewModel labTestViewModel, 
@@ -23,37 +23,46 @@ namespace Lab.UI.ViewModel
         {            
             _labTestDetailViewModelCreator = labTestDetailViewModelCreator;
             _eventAggregator = eventAggregator;
-            _eventAggregator.GetEvent<OpenLabTestDetailViewEvent>().Subscribe(OnOpenTestDetailView, true);
-            _eventAggregator.GetEvent<AfterLabTestDeletedEvent>().Subscribe(AfterLabTestDeleted, true);
+            _eventAggregator.GetEvent<OpenDetailViewEvent>().Subscribe(OnOpenDetailView, true);
+            _eventAggregator.GetEvent<AfterDetailDeletedEvent>().Subscribe(AfterDetailDeleted, true);
             _messageService = messageService;
 
             LabTestViewModel = labTestViewModel;
-            CreateNewTestCommand = new DelegateCommand(OnCreateNewLabTestExecute);
+            CreateNewDetailCommand = new DelegateCommand<Type>(OnCreateNewDetailExecute);
         }
 
 
 
         public ILabTestViewModel LabTestViewModel { get; }
-        public ICommand CreateNewTestCommand { get; }
+        public ICommand CreateNewDetailCommand { get; }
 
-        public ILabTestDetailViewModel LabTestDetailViewModel
+        public IDetailViewModel DetailViewModel
         {
-            get { return labTestDetailViewModel; }
+            get { return detailViewModel; }
             private set
             {
-                labTestDetailViewModel = value;
+                detailViewModel = value;
                 OnPropertyChanged();
             }
         }
-        public async void OnOpenTestDetailView(int? testId)
+        public async void OnOpenDetailView(OpenDetailViewEventArgs args)
         {
-            if(LabTestDetailViewModel!=null && LabTestDetailViewModel.HasChanges)
+            if(DetailViewModel!=null && DetailViewModel.HasChanges)
             {
-                if (_messageService.ShowOkCancelDialog("You have made changes. Navigate away?", "Changes") == MessageDialogResult.Cancel)
+                if (_messageService.ShowOkCancelDialog("There are unsaved changes for this form. Do you want to continue?", 
+                    "Unsaved Changes") == MessageDialogResult.Cancel)
                     return;
             }
-            LabTestDetailViewModel = _labTestDetailViewModelCreator();
-            await LabTestDetailViewModel.LoadAsync(testId);
+
+            switch (args.ViewModelName)
+            {
+                case (nameof(LabTestDetailViewModel)):
+                    DetailViewModel = _labTestDetailViewModelCreator();
+                    break;
+                    
+            }
+            
+            await DetailViewModel.LoadAsync(args.Id);
         }
 
         public async Task LoadAsync()
@@ -61,13 +70,13 @@ namespace Lab.UI.ViewModel
             await LabTestViewModel.LoadAsync();
         }
 
-        private void OnCreateNewLabTestExecute()
+        private void OnCreateNewDetailExecute(Type viewModelType)
         {
-            OnOpenTestDetailView(null);
+            OnOpenDetailView(new OpenDetailViewEventArgs { ViewModelName = viewModelType.Name});
         }
-        private void AfterLabTestDeleted(int id)
+        private void AfterDetailDeleted(AfterDetailsDeletedEventArgs args)
         {
-            LabTestDetailViewModel = null;
+            DetailViewModel = null;
         }
         
 

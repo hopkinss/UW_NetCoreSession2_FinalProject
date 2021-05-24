@@ -17,10 +17,14 @@ namespace Lab.Model
         [Required]
         public string TestName { get; set; }
         
-        public string Unit { get; set; }
         public SpecimenType Specimen { get; set; }
+        public int? UnitId { get; set; }
         public int? CdiscTestId { get; set; }
+
+        public Unit LabTestUnit { get; set; }
         public CdiscTestCd CdiscTestCd { get; set; }
+  
         public  ICollection<LabTestRefRange> ReferenceRanges { get; set; }
+
     }
 }

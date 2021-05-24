@@ -14,14 +14,14 @@
     <Grid Margin="0,5,0,0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition  />
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition  />
+            <RowDefinition />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
@@ -35,11 +35,14 @@
             Grid.Row="1"
             Margin="0,0,0,12"
             Content="Units" />
-        <TextBox
+        <ComboBox
             Grid.Row="1"
             Grid.Column="1"
             Margin="0,0,0,12"
-            Text="{Binding LabTest.Unit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            DisplayMemberPath="Display"
+            ItemsSource="{Binding Units}"
+            SelectedValue="{Binding LabTest.UnitId, Mode=TwoWay}"
+            SelectedValuePath="Id" />
         <Label
             Grid.Row="2"
             Margin="0,0,0,12"
@@ -58,10 +61,10 @@
             Grid.Row="3"
             Grid.Column="1"
             Margin="0,0,0,12"
-            ItemsSource="{Binding CdiscTestCds}"
             DisplayMemberPath="Display"
-            SelectedValuePath="Id"
-            SelectedValue="{Binding LabTest.CdiscTestId,Mode=TwoWay}"/>
+            ItemsSource="{Binding CdiscTestCds}"
+            SelectedValue="{Binding LabTest.CdiscTestId, Mode=TwoWay}"
+            SelectedValuePath="Id" />
         <StackPanel
             Grid.Row="5"
             Grid.ColumnSpan="2"
@@ -76,35 +79,69 @@
                 Command="{Binding DeleteCommand}"
                 Content="Delete" />
         </StackPanel>
-        <DockPanel Grid.Row="4" Grid.ColumnSpan="2">
-            <StackPanel DockPanel.Dock="Right">
-                <rad:RadButton
-                Width="70"
-                Command="{Binding AddReferenceRangeCommand}"
-                Content="Add" />
-                <rad:RadButton
-                Width="70"
-                Command="{Binding RemoveReferenceRangeCommand}"
-                Content="Remove" />
-            </StackPanel>
-            <DataGrid ItemsSource="{Binding ReferenceRanges}"
-                      SelectionMode="Single"
-                    SelectionUnit="CellOrRowHeader"
-                      Margin="0 0 10 10"
-                      SelectedItem="{Binding SelectedReferenceRange,Mode=TwoWay}"
-                      AutoGenerateColumns="False">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Sex"
-                                         ElementStyle="{StaticResource DataGridColumnStyle}"
-             EditingElementStyle="{StaticResource DataGridEditingColumnStyle}"
-                                        Binding="{Binding Sex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                                        />
-                    <DataGridTextColumn Header="LLN"
-                                        Binding="{Binding LLN,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-                    <DataGridTextColumn Header="ULN"
-                                        Binding="{Binding ULN,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-                </DataGrid.Columns>
-            </DataGrid>
-        </DockPanel>
+        <rad:RadTabControl Grid.Row="4" Grid.ColumnSpan="2">
+            <rad:RadTabItem Header="Reference Ranges">
+                <DockPanel Grid.Row="4" Grid.ColumnSpan="2">
+                    <StackPanel DockPanel.Dock="Left">
+                        <rad:RadButton
+                            Width="70"
+                            Command="{Binding AddReferenceRangeCommand}"
+                            Content="Add" />
+                        <rad:RadButton
+                            Width="70"
+                            Command="{Binding RemoveReferenceRangeCommand}"
+                            Content="Remove" />
+                    </StackPanel>
+                    <DataGrid
+                        Margin="0,0,10,10"
+                        AutoGenerateColumns="False"
+                        ItemsSource="{Binding ReferenceRanges}"
+                        SelectedItem="{Binding SelectedReferenceRange, Mode=TwoWay}"
+                        SelectionMode="Single"
+                        SelectionUnit="CellOrRowHeader">
+                        <DataGrid.Columns>
+                            <DataGridComboBoxColumn
+                                Width="70"
+                                Header="Sex"
+                                ItemsSource="{Binding Source={util:EnumBindingExtension {x:Type model:Sex}}}"
+                                SelectedItemBinding="{Binding Sex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <DataGridTextColumn Binding="{Binding LLN, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="LLN" />
+                            <DataGridTextColumn Binding="{Binding ULN, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="ULN" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </rad:RadTabItem>
+            <rad:RadTabItem Header="Conversions">
+                <DockPanel Grid.Row="4" Grid.ColumnSpan="2">
+                    <StackPanel DockPanel.Dock="Left">
+                        <rad:RadButton
+                            Width="70"
+                            Command="{Binding AddConversionCommand}"
+                            Content="Add" />
+                        <rad:RadButton
+                            Width="70"
+                            Command="{Binding RemoveConversionCommand}"
+                            Content="Remove" />
+                    </StackPanel>
+                    <DataGrid
+                        Margin="0,0,10,10"
+                        AutoGenerateColumns="False"
+                        ItemsSource="{Binding Conversions}"
+                        SelectedItem="{Binding SelectedConversion, Mode=TwoWay}"
+                        SelectionMode="Single"
+                        SelectionUnit="CellOrRowHeader">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn
+                                Binding="{Binding FromUnit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                EditingElementStyle="{StaticResource DataGridEditingColumnStyle}"
+                                ElementStyle="{StaticResource DataGridColumnStyle}"
+                                Header="From Unit" />
+                            <DataGridTextColumn Binding="{Binding ToUnit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="To Unit" />
+                            <DataGridTextColumn Binding="{Binding ConFac, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Factor" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </rad:RadTabItem>
+        </rad:RadTabControl>
     </Grid>
 </UserControl>

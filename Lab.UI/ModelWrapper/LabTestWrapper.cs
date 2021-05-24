@@ -21,9 +21,9 @@ namespace Lab.UI.ModelWrapper
                 SetValue(value);
             }
         }
-        public string Unit
+        public int? UnitId
         {
-            get { return GetValue<string>(); }
+            get { return GetValue<int?>(); }
             set
             {
                 SetValue(value);

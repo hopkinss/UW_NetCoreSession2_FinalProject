@@ -12,17 +12,23 @@ namespace Lab.UI.ViewModel
     {
         private string display;
         private IEventAggregator _eventAggregator;
-        public LookupItemViewModel(int id,string displayValue,IEventAggregator eventAggregator)
+        private string _detailViewModelName;
+
+        public LookupItemViewModel(int id,string displayValue
+            ,string detailViewModelName
+            ,IEventAggregator eventAggregator)
         {
             Id = id;
             Display = displayValue;
-            OpenLabTestDetailViewCommand = new DelegateCommand(OnOpenLabTestDetailView);
+            OpenDetailViewCommand = new DelegateCommand(OnOpenDetailViewExecute);
             _eventAggregator = eventAggregator;
+            _detailViewModelName = detailViewModelName;
         }
 
-        private void OnOpenLabTestDetailView()
+        private void OnOpenDetailViewExecute()
         {
-            _eventAggregator.GetEvent<OpenLabTestDetailViewEvent>().Publish(Id);
+            _eventAggregator.GetEvent<OpenDetailViewEvent>()
+                .Publish(new OpenDetailViewEventArgs { Id=Id,ViewModelName= _detailViewModelName });
         }
 
         public int Id { get;}
@@ -35,7 +41,7 @@ namespace Lab.UI.ViewModel
                 OnPropertyChanged();
             }
         }
-        public ICommand OpenLabTestDetailViewCommand { get; }
+        public ICommand OpenDetailViewCommand { get; }
 
         
     }

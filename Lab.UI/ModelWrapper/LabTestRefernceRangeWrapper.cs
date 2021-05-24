@@ -7,25 +7,21 @@ namespace Lab.UI.ModelWrapper
 {
     public class LabTestRefernceRangeWrapper : Wrapper<LabTestRefRange>
     {
-        public LabTestRefernceRangeWrapper(LabTestRefRange model) : base(model)
+        public LabTestRefernceRangeWrapper(LabTestRefRange model) : base(model) { }
+
+        public Sex Sex
         {
-
+            get { return GetValue<Sex>(); }
+            set { SetValue(value); }
         }
-
-
-        public string Sex
+        public string ULN
         {
             get { return GetValue<string>(); }
             set { SetValue(value); }
         }
-        public double ULN
+        public string LLN
         {
-            get { return GetValue<double>(); }
-            set { SetValue(value); }
-        }
-        public double LLN
-        {
-            get { return GetValue<double>(); }
+            get { return GetValue<string>(); }
             set { SetValue(value); }
         }
     }

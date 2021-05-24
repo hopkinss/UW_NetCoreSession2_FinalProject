@@ -23,16 +23,11 @@ namespace Lab.UI.ViewModel
             _lookupDataService = lookupService;
             LabTests = new ObservableCollection<LookupItemViewModel>();
             _eventAggregator = eventAggregator;
-            _eventAggregator.GetEvent<LabTestSavedEvent>().Subscribe(AfterLabTestSaved,true);
-            _eventAggregator.GetEvent<AfterLabTestDeletedEvent>().Subscribe(AfterLabTestDeleted,true);
-
-            
+            _eventAggregator.GetEvent<AfterDetailSavedEvent>().Subscribe(AfterDetailsSaved, true);
+            _eventAggregator.GetEvent<AfterDetailDeletedEvent>().Subscribe(AfterDetailDeleted, true);
         }
-
-
-
         public ObservableCollection<LookupItemViewModel> LabTests { get; }
-        
+
 
         public async Task LoadAsync()
         {
@@ -40,26 +35,34 @@ namespace Lab.UI.ViewModel
 
         }
 
-
-
-        private void AfterLabTestSaved(AfterLabTestSavedEventArgs obj)
+        private void AfterDetailsSaved(AfterDetailSavedEventArgs obj)
         {
-            var item = LabTests.SingleOrDefault(x => x.Id == obj.Id);
-            if (item == null)
+            switch (obj.ViewModelName)
             {
-                LabTests.Add(new LookupItemViewModel(obj.Id,obj.Display,_eventAggregator));
-            }
-            else
-            {
-                item.Display = obj.Display;
+                case(nameof(LabTestDetailViewModel)):
+                    var item = LabTests.SingleOrDefault(x => x.Id == obj.Id);
+                    if (item == null)
+                    {
+                        LabTests.Add(new LookupItemViewModel(obj.Id, obj.Display, nameof(LabTestDetailViewModel), _eventAggregator));
+                    }
+                    else
+                    {
+                        item.Display = obj.Display;
+                    }
+                    break;
             }
         }
-        private void AfterLabTestDeleted(int id)
+        private void AfterDetailDeleted(AfterDetailsDeletedEventArgs args)
         {
-            var item = LabTests.SingleOrDefault(x => x.Id == id);
-            if (item != null)
+            switch (args.ViewModelName)
             {
-                LabTests.Remove(item);
+                case nameof(LabTestDetailViewModel):
+                    var item = LabTests.SingleOrDefault(x => x.Id == args.Id);
+                    if (item != null)
+                    {
+                        LabTests.Remove(item);
+                    }
+                    break;
             }
         }
         private async Task LoadLabTests()
@@ -68,10 +71,8 @@ namespace Lab.UI.ViewModel
             LabTests.Clear();
             foreach (var test in tests)
             {
-                LabTests.Add(new LookupItemViewModel(test.Id, test.Display, _eventAggregator));
+                LabTests.Add(new LookupItemViewModel(test.Id, test.Display, nameof(LabTestDetailViewModel), _eventAggregator));
             }
         }
-
-
     }
 }
