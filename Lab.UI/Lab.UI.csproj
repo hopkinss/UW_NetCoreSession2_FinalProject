@@ -1,0 +1,95 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>Lab.UI</RootNamespace>
+    <EnableDefaultItems>False</EnableDefaultItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="6.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.15">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.15">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.15" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.1.15" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.15" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.15" />
+    <PackageReference Include="Prism.Core" Version="8.0.0.1909" />
+    <PackageReference Include="Telerik.UI.for.Wpf.NetCore.Xaml" Version="2021.1.325" />
+  </ItemGroup>
+  
+  <ItemGroup>
+  <ApplicationDefinition Include="App.xaml">
+    <Generator>MSBuild:Compile</Generator>
+    <SubType>Designer</SubType>
+  </ApplicationDefinition>
+  <Page Include="MainWindow.xaml">
+    <Generator>MSBuild:Compile</Generator>
+    <SubType>Designer</SubType>
+  </Page>
+  <Page Include="Resources\Brushes.xaml">
+    <Generator>MSBuild:Compile</Generator>
+  </Page>
+  <Page Include="Resources\Strings.xaml">
+    <Generator>MSBuild:Compile</Generator>
+  </Page>
+  <Page Include="Resources\Styles.xaml">
+    <Generator>MSBuild:Compile</Generator>
+  </Page>
+  <Page Include="View\LabTestDetailView.xaml">
+    <Generator>MSBuild:Compile</Generator>
+  </Page>
+  <Page Include="View\LabTestView.xaml">
+    <Generator>MSBuild:Compile</Generator>
+  </Page>
+  <Compile Include="App.xaml.cs">
+    <DependentUpon>App.xaml</DependentUpon>
+    <SubType>Code</SubType>
+  </Compile>
+  <Compile Include="Data\Lookups\ILookupDataService.cs" />
+  <Compile Include="Data\Respository\ILabTestRepository.cs" />
+  <Compile Include="Data\Respository\LabTestRepository.cs" />
+  <Compile Include="Data\Lookups\LookupDataService.cs" />
+  <Compile Include="Events\AfterLabTestDeletedEvent.cs" />
+  <Compile Include="Events\LabTestSavedEvent.cs" />
+  <Compile Include="Events\OpenLabTestDetailViewEvent.cs" />
+  <Compile Include="MainWindow.xaml.cs">
+    <DependentUpon>MainWindow.xaml</DependentUpon>
+    <SubType>Code</SubType>
+  </Compile>
+  <Compile Include="ModelWrapper\LabTestRefernceRangeWrapper.cs" />
+  <Compile Include="ModelWrapper\LabTestWrapper.cs" />
+  <Compile Include="ModelWrapper\NotifyDataErrorInfoBase.cs" />
+  <Compile Include="ModelWrapper\Wrapper.cs" />
+  <Compile Include="Startup\Bootstrapper.cs" />
+  <Compile Include="Utility\EnumBindingExtension.cs" />
+  <Compile Include="Utility\IMessageService.cs" />
+  <Compile Include="Utility\MessageService.cs" />
+  <Compile Include="ViewModel\ILabTestDetailViewModel.cs" />
+  <Compile Include="ViewModel\ILabTestViewModel.cs" />
+  <Compile Include="ViewModel\LabTestDetailViewModel.cs" />
+  <Compile Include="ViewModel\LabTestViewModel.cs" />
+  <Compile Include="ViewModel\LookupItemViewModel.cs" />
+  <Compile Include="ViewModel\MainViewModel.cs" />
+  <Compile Include="ViewModel\ViewModelBase.cs" />
+  <Compile Include="View\LabTestDetailView.xaml.cs" />
+  <Compile Include="View\LabTestView.xaml.cs" />
+</ItemGroup>
+  
+  <ItemGroup>
+    <Content Include="appsettings.json" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Lab.Data\Lab.Data.csproj" />
+    <ProjectReference Include="..\Lab.Model\Lab.Model.csproj" />
+  </ItemGroup>
+
+</Project>

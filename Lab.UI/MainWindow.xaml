@@ -1,0 +1,38 @@
+﻿<Window
+    x:Class="Lab.UI.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+    xmlns:view="clr-namespace:Lab.UI.View"
+    xmlns:rad="http://schemas.telerik.com/2008/xaml/presentation"
+    xmlns:viewmodel="clr-namespace:Lab.UI.ViewModel"
+    Title="MainWindow"
+    Width="1000"
+    Height="700"
+    WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type viewmodel:LabTestDetailViewModel}">
+            <view:LabTestDetailView/>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <rad:RadMenu Grid.ColumnSpan="2">
+            <rad:RadMenuItem Header="Add">
+                <rad:RadMenuItem Header="New Test" Command="{Binding CreateNewTestCommand}"/>
+            </rad:RadMenuItem>    
+        </rad:RadMenu>
+        
+        <view:LabTestView DataContext="{Binding LabTestViewModel}" Grid.Row="1" />
+        <ContentControl Grid.Row="1" Grid.Column="1" 
+                        Content="{Binding LabTestDetailViewModel}" />
+    </Grid>
+</Window>

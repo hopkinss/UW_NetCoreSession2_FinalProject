@@ -1,0 +1,110 @@
+﻿<UserControl
+    x:Class="Lab.UI.View.LabTestDetailView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Lab.UI.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:model="clr-namespace:Lab.Model;assembly=Lab.Model"
+    xmlns:rad="http://schemas.telerik.com/2008/xaml/presentation"
+    xmlns:util="clr-namespace:Lab.UI.Utility"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <Grid Margin="0,5,0,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition  />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition  />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+
+        <Label Margin="0,0,0,12" Content="Test Name" />
+        <TextBox
+            Grid.Column="1"
+            Margin="0,0,0,12"
+            Text="{Binding LabTest.TestName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        <Label
+            Grid.Row="1"
+            Margin="0,0,0,12"
+            Content="Units" />
+        <TextBox
+            Grid.Row="1"
+            Grid.Column="1"
+            Margin="0,0,0,12"
+            Text="{Binding LabTest.Unit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        <Label
+            Grid.Row="2"
+            Margin="0,0,0,12"
+            Content="Specimen" />
+        <ComboBox
+            Grid.Row="2"
+            Grid.Column="1"
+            Margin="0,0,0,12"
+            ItemsSource="{Binding Source={util:EnumBindingExtension {x:Type model:SpecimenType}}}"
+            SelectedItem="{Binding LabTest.Specimen, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        <Label
+            Grid.Row="3"
+            Margin="0,0,0,12"
+            Content="CDISC Code" />
+        <ComboBox
+            Grid.Row="3"
+            Grid.Column="1"
+            Margin="0,0,0,12"
+            ItemsSource="{Binding CdiscTestCds}"
+            DisplayMemberPath="Display"
+            SelectedValuePath="Id"
+            SelectedValue="{Binding LabTest.CdiscTestId,Mode=TwoWay}"/>
+        <StackPanel
+            Grid.Row="5"
+            Grid.ColumnSpan="2"
+            Margin="0,5,0,0"
+            Orientation="Horizontal">
+            <rad:RadButton
+                Width="70"
+                Command="{Binding SaveCommand}"
+                Content="Save" />
+            <rad:RadButton
+                Width="70"
+                Command="{Binding DeleteCommand}"
+                Content="Delete" />
+        </StackPanel>
+        <DockPanel Grid.Row="4" Grid.ColumnSpan="2">
+            <StackPanel DockPanel.Dock="Right">
+                <rad:RadButton
+                Width="70"
+                Command="{Binding AddReferenceRangeCommand}"
+                Content="Add" />
+                <rad:RadButton
+                Width="70"
+                Command="{Binding RemoveReferenceRangeCommand}"
+                Content="Remove" />
+            </StackPanel>
+            <DataGrid ItemsSource="{Binding ReferenceRanges}"
+                      SelectionMode="Single"
+                    SelectionUnit="CellOrRowHeader"
+                      Margin="0 0 10 10"
+                      SelectedItem="{Binding SelectedReferenceRange,Mode=TwoWay}"
+                      AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Sex"
+                                         ElementStyle="{StaticResource DataGridColumnStyle}"
+             EditingElementStyle="{StaticResource DataGridEditingColumnStyle}"
+                                        Binding="{Binding Sex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                        />
+                    <DataGridTextColumn Header="LLN"
+                                        Binding="{Binding LLN,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                    <DataGridTextColumn Header="ULN"
+                                        Binding="{Binding ULN,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+    </Grid>
+</UserControl>
