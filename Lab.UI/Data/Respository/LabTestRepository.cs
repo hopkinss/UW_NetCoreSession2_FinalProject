@@ -2,6 +2,7 @@
 using Lab.Model;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +18,14 @@ namespace Lab.UI.Data.Repository
 
         public override async Task<LabTest>  GetByIdAsync(int id)
         {
-            return await Context.LabTests.Include(x => x.ReferenceRanges).SingleAsync(x => x.Id == id); 
+            return await Context.LabTests
+                .Include(x => x.ReferenceRanges)
+                .Include(x=> x.Conversions).SingleAsync(x => x.Id == id); 
+        }
+
+        public void RemoveConversion(LabTestConversion model)
+        {
+            Context.LabTestConversions.Remove(model);
         }
 
         public void RemoveReferenceRange(LabTestRefRange model)
@@ -25,5 +33,11 @@ namespace Lab.UI.Data.Repository
             Context.LabTestRefRanges.Remove(model);
         }
 
+        public async Task<List<LabTest>> GetAllAsync()
+        {
+            return await Context.LabTests
+                .Include(x => x.ReferenceRanges)
+                .Include(x => x.Conversions).ToListAsync();
+        }
     }
 }

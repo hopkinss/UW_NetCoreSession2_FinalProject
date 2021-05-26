@@ -1,14 +1,16 @@
-﻿<Window
+﻿<Controls:MetroWindow
     x:Class="Lab.UI.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:rad="http://schemas.telerik.com/2008/xaml/presentation"
     xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
     xmlns:view="clr-namespace:Lab.UI.View"
     xmlns:viewmodel="clr-namespace:Lab.UI.ViewModel"
-    Title="MainWindow"
-    Width="1000"
+    Title="Clinical Laboratory Analyte Manager"
+    Width="800"
     Height="500"
     WindowStartupLocation="CenterScreen">
     <Window.Resources>
@@ -24,21 +26,58 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <rad:RadMenu Grid.ColumnSpan="2">
-            <rad:RadMenuItem Header="Add">
-                <rad:RadMenuItem
-                    Command="{Binding CreateNewDetailCommand}"
-                    CommandParameter="{x:Type viewmodel:LabTestDetailViewModel}"
-                    Header="New Test" />
+            <rad:RadMenuItem Command="{Binding CreateNewDetailCommand}" 
+                             CommandParameter="{x:Type viewmodel:LabTestDetailViewModel}">
+                <rad:RadMenuItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <icons:PackIconUnicons Kind="Flask" />
+                        <TextBlock Margin="5,0,0,0" Text="New Analyte" />
+                    </StackPanel>
+                </rad:RadMenuItem.Header>
+            </rad:RadMenuItem>
+            <rad:RadMenuItem >
+                <rad:RadMenuItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <icons:PackIconMaterial Kind="Export" />
+                        <TextBlock Margin="5,0,0,0" Text="Export" />
+                    </StackPanel>
+                </rad:RadMenuItem.Header>
+                <rad:RadMenuItem Command="{Binding ExportCommand}"  CommandParameter="json">
+                    <rad:RadMenuItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <icons:PackIconMaterial Kind="CodeJson" />
+                            <TextBlock Margin="5,0,0,0" Text="Send to JSON" />
+                        </StackPanel>
+                    </rad:RadMenuItem.Header>
+                </rad:RadMenuItem>
+                <rad:RadMenuItem Command="{Binding ExportCommand}" CommandParameter="xlsx">
+                    <rad:RadMenuItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <icons:PackIconFileIcons Kind="Excel" />
+                            <TextBlock Margin="5,0,0,0" Text="Send to Excel" />
+                        </StackPanel>
+                    </rad:RadMenuItem.Header>
+                </rad:RadMenuItem>
             </rad:RadMenuItem>
         </rad:RadMenu>
 
         <view:LabTestView Grid.Row="1" DataContext="{Binding LabTestViewModel}" />
 
-        <ContentControl
+        <GroupBox
             Grid.Row="1"
             Grid.Column="1"
-            Content="{Binding DetailViewModel}" />
+            Header="Characteristics">
+            <ContentControl Content="{Binding DetailViewModel}" />
+        </GroupBox>
+        <TextBlock
+            Grid.Row="2"
+            Grid.ColumnSpan="2"
+            Margin="0,5,0,0"
+            HorizontalAlignment="Center"
+            Foreground="SlateGray"
+            Text="UW .NET Core Session 2 - Final Project: Shawn Hopkins" />
     </Grid>
-</Window>
+</Controls:MetroWindow>

@@ -61,5 +61,35 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+    <Style TargetType="{x:Type rad:RadButton}">
+        <Setter Property="Background" Value="White" />
+        <Setter Property="Width" Value="70" />
+        <Setter Property="Height" Value="22" />
+        <Setter Property="Padding" Value="2" />
+        <Setter Property="Margin" Value="2" />
+        <Setter Property="BorderBrush" Value="#0096FF" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="Foreground" Value="#0096FF" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="CornerRadius" Value="5" />
+    </Style>
+    <Style x:Key="MenuButton" TargetType="{x:Type rad:RadButton}">
+        <Setter Property="Foreground" Value="#0096FF" />
+    </Style>
+
+    <Style x:Key="DetailLabel" TargetType="{x:Type Label}">
+        <Setter Property="Foreground" Value="#0096FF"/>
+    </Style>
+    <Style TargetType="rad:RadMenu">
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="Foreground" Value="#0096FF"/>
+    </Style>
+    <Style TargetType="{x:Type rad:RadTabItem}">
+        <Setter Property="Foreground" Value="#0096FF"/>
+
+    </Style>
 
 </ResourceDictionary>

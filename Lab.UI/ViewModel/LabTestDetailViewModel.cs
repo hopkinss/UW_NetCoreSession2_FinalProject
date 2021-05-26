@@ -25,7 +25,8 @@ namespace Lab.UI.ViewModel
         private LabTestWrapper labTest;
         private IMessageService _messageService;
         private ILookupDataService _lookupDataService;
-        private LabTestRefernceRangeWrapper selectedReferenceRange;
+        private LabTestReferenceRangeWrapper selectedReferenceRange;
+        private LabTestConversionsWrapper selectedConversion;
 
         public LabTestDetailViewModel(ILabTestRepository labTestRepository,
             IEventAggregator eventAggregator,
@@ -36,18 +37,26 @@ namespace Lab.UI.ViewModel
 
             _messageService = messageService;
             CdiscTestCds = new ObservableCollection<LookupItem>();
+            CdiscTests = new ObservableCollection<LookupItem>();
             Units = new ObservableCollection<LookupItem>();
+
             _lookupDataService = lookupDataService;
-            ReferenceRanges = new ObservableCollection<LabTestRefernceRangeWrapper>();
+            ReferenceRanges = new ObservableCollection<LabTestReferenceRangeWrapper>();
+            Conversions = new ObservableCollection<LabTestConversionsWrapper>();
+
             AddReferenceRangeCommand = new DelegateCommand(OnAddReferenceRangeExecute);
             RemoveReferenceRangeCommand = new DelegateCommand(OnRemoveReferenceRangeExecute, CanRemoveReferenceRangeExecute);
+            AddConversionCommand = new DelegateCommand(OnAddConversionExecute);
+            RemoveConversionCommand = new DelegateCommand(OnRemoveConversionExecute, CanRemoveConversionExecute);
 
         }
 
         public ObservableCollection<LookupItem> CdiscTestCds { get; }
+        public ObservableCollection<LookupItem> CdiscTests { get; }
         public ObservableCollection<LookupItem> Units { get; }
-        public ObservableCollection<LabTestRefernceRangeWrapper> ReferenceRanges { get; }
-        public LabTestRefernceRangeWrapper SelectedReferenceRange
+        public ObservableCollection<LabTestReferenceRangeWrapper> ReferenceRanges { get; }
+        public ObservableCollection<LabTestConversionsWrapper> Conversions { get; }
+        public LabTestReferenceRangeWrapper SelectedReferenceRange
         {
             get { return selectedReferenceRange; }
             set
@@ -57,9 +66,21 @@ namespace Lab.UI.ViewModel
                 ((DelegateCommand)RemoveReferenceRangeCommand).RaiseCanExecuteChanged();
             }
         }
+        public LabTestConversionsWrapper SelectedConversion
+        {
+            get { return selectedConversion; }
+            set
+            {
+                selectedConversion = value;
+                OnPropertyChanged();
+                ((DelegateCommand)RemoveConversionCommand).RaiseCanExecuteChanged();
+            }
+        }
 
         public ICommand AddReferenceRangeCommand { get; }
         public ICommand RemoveReferenceRangeCommand { get; }
+        public ICommand AddConversionCommand { get; }
+        public ICommand RemoveConversionCommand { get; }
 
         public LabTestWrapper LabTest
         {
@@ -73,14 +94,15 @@ namespace Lab.UI.ViewModel
 
         public override async Task LoadAsync(int? testId)
         {
-            var labTest = testId.HasValue ? await _labTestRespository.GetByIdAsync(testId.Value)
-                : CreateNewLabTest();
-
-            InitLabTest(labTest);
-            InitLabTestReferenceRanges(labTest.ReferenceRanges);
-
-            await LoadCdiscTestCodes();
+            var labTest = testId.HasValue ? await _labTestRespository.GetByIdAsync(testId.Value) : CreateNewLabTest();
             await LoadUnits();
+            InitLabTest(labTest);
+            
+            InitLabTestConversions(labTest.Conversions);
+            InitLabTestReferenceRanges(labTest.ReferenceRanges);
+            await LoadCdiscTestCodes();
+            await LoadCdiscTests();
+    
         }
 
         private void InitLabTestReferenceRanges(ICollection<LabTestRefRange> ranges)
@@ -92,22 +114,50 @@ namespace Lab.UI.ViewModel
             ReferenceRanges.Clear();
             foreach (var rr in ranges)
             {
-                var wr = new LabTestRefernceRangeWrapper(rr);
+                var wr = new LabTestReferenceRangeWrapper(rr);
                 ReferenceRanges.Add(wr);
                 wr.PropertyChanged += LabTestReferenceRangesWrapper_PropertyChanged;                
             }
         }
+        private void InitLabTestConversions(ICollection<LabTestConversion> conversions)
+        {
+            foreach (var rr in Conversions)
+            {
+                rr.PropertyChanged -= LabTestReferenceRangesWrapper_PropertyChanged;
+            }
+            ReferenceRanges.Clear();
+            foreach (var rr in conversions)
+            {
+                var wr = new LabTestConversionsWrapper(rr);
+                Conversions.Add(wr);
+                wr.PropertyChanged += LabTestReferenceRangesWrapper_PropertyChanged;
+            }
+        }
+
         private void LabTestReferenceRangesWrapper_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (!HasChanges)
             {
                 HasChanges = _labTestRespository.HasChanges();
             }
-            if (e.PropertyName == nameof(LabTestRefernceRangeWrapper.HasErrors))
+            if (e.PropertyName == nameof(LabTestReferenceRangeWrapper.HasErrors))
             {
                 ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
             }
         }
+        private void LabTestConversionWrapper_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (!HasChanges)
+            {
+                HasChanges = _labTestRespository.HasChanges();
+            }
+            if (e.PropertyName == nameof(LabTestConversionsWrapper.HasErrors))
+            {
+                ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+            }
+        }
+    
+
         private void InitLabTest(LabTest labTest)
         {
             LabTest = new LabTestWrapper(labTest);
@@ -138,6 +188,17 @@ namespace Lab.UI.ViewModel
             foreach (var code in codes)
             {
                 CdiscTestCds.Add(code);
+            }
+        }
+
+        private async Task LoadCdiscTests()
+        {
+            CdiscTests.Clear();
+            CdiscTests.Add(new NullLookupItem() { Display = "-none-" });
+            var tests = await _lookupDataService.GetCdiscTestLookupAsync();
+            foreach (var test in tests)
+            {
+                CdiscTests.Add(test);
             }
         }
 
@@ -193,18 +254,40 @@ namespace Lab.UI.ViewModel
             HasChanges = _labTestRespository.HasChanges();
             ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
         }
+        private void OnRemoveConversionExecute()
+        {
+            SelectedConversion.PropertyChanged -= LabTestConversionWrapper_PropertyChanged;
+            _labTestRespository.RemoveConversion(SelectedConversion.Model);
+            Conversions.Remove(SelectedConversion);
+            SelectedConversion = null;
+            HasChanges = _labTestRespository.HasChanges();
+            ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+        }
+
 
         private void OnAddReferenceRangeExecute()
         {
-            var range = new LabTestRefernceRangeWrapper(new LabTestRefRange());
+            var range = new LabTestReferenceRangeWrapper(new LabTestRefRange());
             range.PropertyChanged += LabTestReferenceRangesWrapper_PropertyChanged;
             ReferenceRanges.Add(range);
             LabTest.Model.ReferenceRanges.Add(range.Model);
             range.Sex = Sex.All;
         }
+
+        private void OnAddConversionExecute()
+        {
+            var conversion = new LabTestConversionsWrapper(new LabTestConversion());
+            conversion.PropertyChanged += LabTestConversionWrapper_PropertyChanged;
+            Conversions.Add(conversion);
+            LabTest.Model.Conversions.Add(conversion.Model);
+        }
         private bool CanRemoveReferenceRangeExecute()
         {
             return SelectedReferenceRange != null;
+        }
+        private bool CanRemoveConversionExecute()
+        {
+            return SelectedConversion != null;
         }
     }
 }

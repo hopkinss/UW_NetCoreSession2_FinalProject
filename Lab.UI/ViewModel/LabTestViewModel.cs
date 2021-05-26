@@ -74,5 +74,6 @@ namespace Lab.UI.ViewModel
                 LabTests.Add(new LookupItemViewModel(test.Id, test.Display, nameof(LabTestDetailViewModel), _eventAggregator));
             }
         }
+
     }
 }

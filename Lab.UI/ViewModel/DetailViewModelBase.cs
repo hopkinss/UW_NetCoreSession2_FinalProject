@@ -14,8 +14,6 @@ namespace Lab.UI.ViewModel
         protected readonly IEventAggregator EventAggregator;
         private bool hasChanges;
 
-
-        
         public DetailViewModelBase(IEventAggregator eventAggregator)
         {
             EventAggregator = eventAggregator;
@@ -38,8 +36,6 @@ namespace Lab.UI.ViewModel
 
         public ICommand DeleteCommand { get; }
         public ICommand SaveCommand { get; }
-
-
         public abstract Task LoadAsync(int? id);
         protected abstract void OnDeleteExecute();
         protected abstract bool OnSaveCanExectute();

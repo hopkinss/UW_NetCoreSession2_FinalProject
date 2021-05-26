@@ -13,6 +13,12 @@ namespace Lab.UI.Utility
 
             return response == MessageBoxResult.OK ? MessageDialogResult.OK : MessageDialogResult.Cancel;
         }
+
+        public MessageDialogResult ShowOkDialog(string text, string title)
+        {
+            var response = MessageBox.Show(text, title, MessageBoxButton.OK);
+            return response == MessageBoxResult.OK ? MessageDialogResult.OK : MessageDialogResult.Cancel;
+        }
     }
 
     public enum MessageDialogResult { OK,Cancel}

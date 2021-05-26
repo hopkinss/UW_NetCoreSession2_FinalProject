@@ -37,8 +37,25 @@ namespace Lab.UI.ModelWrapper
                 SetValue(value);
             }
         }
+        public CategoryType Category
+        {
+            get { return GetValue<CategoryType>(); }
+            set
+            {
+                SetValue(value);
+            }
+        }
+
 
         public int? CdiscTestId
+        {
+            get { return GetValue<int?>(); }
+            set
+            {
+                SetValue(value);
+            }
+        }
+        public int? CdiscTestNameId
         {
             get { return GetValue<int?>(); }
             set

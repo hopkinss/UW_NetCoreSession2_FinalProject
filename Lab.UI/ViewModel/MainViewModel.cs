@@ -1,5 +1,8 @@
-﻿using Lab.UI.Events;
+﻿using Lab.UI.Data.Repository;
+using Lab.UI.Events;
+using Lab.UI.Services;
 using Lab.UI.Utility;
+using Microsoft.Win32;
 using Prism.Commands;
 using Prism.Events;
 using System;
@@ -14,11 +17,13 @@ namespace Lab.UI.ViewModel
         private Func<ILabTestDetailViewModel> _labTestDetailViewModelCreator;
         private IDetailViewModel detailViewModel;
         private IMessageService _messageService;
+        private ILabTestRepository _repository;
 
         public MainViewModel(ILabTestViewModel labTestViewModel, 
             Func<ILabTestDetailViewModel> labTestDetailViewModelCreator,
             IEventAggregator eventAggregator,
-            IMessageService messageService
+            IMessageService messageService,
+            ILabTestRepository repository
             )
         {            
             _labTestDetailViewModelCreator = labTestDetailViewModelCreator;
@@ -26,15 +31,18 @@ namespace Lab.UI.ViewModel
             _eventAggregator.GetEvent<OpenDetailViewEvent>().Subscribe(OnOpenDetailView, true);
             _eventAggregator.GetEvent<AfterDetailDeletedEvent>().Subscribe(AfterDetailDeleted, true);
             _messageService = messageService;
+            _repository = repository;
 
             LabTestViewModel = labTestViewModel;
             CreateNewDetailCommand = new DelegateCommand<Type>(OnCreateNewDetailExecute);
+            ExportCommand = new DelegateCommand<string>(OnExportExecute);
         }
 
 
 
         public ILabTestViewModel LabTestViewModel { get; }
         public ICommand CreateNewDetailCommand { get; }
+        public ICommand ExportCommand { get; }
 
         public IDetailViewModel DetailViewModel
         {
@@ -58,8 +66,7 @@ namespace Lab.UI.ViewModel
             {
                 case (nameof(LabTestDetailViewModel)):
                     DetailViewModel = _labTestDetailViewModelCreator();
-                    break;
-                    
+                    break;                    
             }
             
             await DetailViewModel.LoadAsync(args.Id);
@@ -78,8 +85,21 @@ namespace Lab.UI.ViewModel
         {
             DetailViewModel = null;
         }
-        
+        private void OnExportExecute(string obj)
+        {
+            var sfd = new SaveFileDialog()
+            {
+                Filter = obj == "json" ? "json files (*.json)|*.json" : "Excel files (*.xlsx)|*.xlsx",
+                FileName = "analytes",
+                CreatePrompt=false,                
+            };
 
-
+            if (sfd.ShowDialog() == true)
+            {
+                var export = new ExportData(_repository, sfd.FileName);
+                var result =  export.Export();
+                _messageService.ShowOkDialog(result.Msg, result.Ok ? "Success" : "Error");
+            }
+        }
     }
 }

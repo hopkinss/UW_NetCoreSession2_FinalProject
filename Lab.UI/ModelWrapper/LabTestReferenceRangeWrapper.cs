@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Lab.UI.ModelWrapper
 {
-    public class LabTestRefernceRangeWrapper : Wrapper<LabTestRefRange>
+    public class LabTestReferenceRangeWrapper : Wrapper<LabTestRefRange>
     {
-        public LabTestRefernceRangeWrapper(LabTestRefRange model) : base(model) { }
+        public LabTestReferenceRangeWrapper(LabTestRefRange model) : base(model) { }
 
         public Sex Sex
         {

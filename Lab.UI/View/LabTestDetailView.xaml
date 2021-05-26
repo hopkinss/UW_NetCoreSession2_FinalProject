@@ -2,7 +2,9 @@
     x:Class="Lab.UI.View.LabTestDetailView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converter="clr-namespace:Lab.UI.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:local="clr-namespace:Lab.UI.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:model="clr-namespace:Lab.Model;assembly=Lab.Model"
@@ -11,9 +13,15 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+    <UserControl.Resources>
+        <converter:HasChangesConverter x:Key="HasChangesConverter" />
+    </UserControl.Resources>
     <Grid Margin="0,5,0,0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="150" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="150" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -25,19 +33,30 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-
-        <Label Margin="0,0,0,12" Content="Test Name" />
+        <icons:PackIconUnicons
+            Grid.Column="6"
+            HorizontalAlignment="Right"
+            Margin="0 0 5 0"
+            Foreground="Red"
+            Kind="Edit"
+            Opacity=".6"
+            ToolTip="Unsaved changes"
+            Visibility="{Binding HasChanges, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource HasChangesConverter}}" />
+        <Label
+            Margin="0,0,0,12"
+            Content="Test Name:"
+            Style="{StaticResource DetailLabel}" />
         <TextBox
             Grid.Column="1"
             Margin="0,0,0,12"
             Text="{Binding LabTest.TestName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         <Label
-            Grid.Row="1"
+            Grid.Column="2"
             Margin="0,0,0,12"
-            Content="Units" />
+            Content="Units:"
+            Style="{StaticResource DetailLabel}" />
         <ComboBox
-            Grid.Row="1"
-            Grid.Column="1"
+            Grid.Column="3"
             Margin="0,0,0,12"
             DisplayMemberPath="Display"
             ItemsSource="{Binding Units}"
@@ -46,17 +65,31 @@
         <Label
             Grid.Row="2"
             Margin="0,0,0,12"
-            Content="Specimen" />
+            Content="Category:"
+            Style="{StaticResource DetailLabel}" />
         <ComboBox
             Grid.Row="2"
             Grid.Column="1"
+            Margin="0,0,0,12"
+            ItemsSource="{Binding Source={util:EnumBindingExtension {x:Type model:CategoryType}}}"
+            SelectedItem="{Binding LabTest.Category, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        <Label
+            Grid.Row="2"
+            Grid.Column="2"
+            Margin="0,0,0,12"
+            Content="Specimen:"
+            Style="{StaticResource DetailLabel}" />
+        <ComboBox
+            Grid.Row="2"
+            Grid.Column="3"
             Margin="0,0,0,12"
             ItemsSource="{Binding Source={util:EnumBindingExtension {x:Type model:SpecimenType}}}"
             SelectedItem="{Binding LabTest.Specimen, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         <Label
             Grid.Row="3"
             Margin="0,0,0,12"
-            Content="CDISC Code" />
+            Content="CDISC Code:"
+            Style="{StaticResource DetailLabel}" />
         <ComboBox
             Grid.Row="3"
             Grid.Column="1"
@@ -65,48 +98,88 @@
             ItemsSource="{Binding CdiscTestCds}"
             SelectedValue="{Binding LabTest.CdiscTestId, Mode=TwoWay}"
             SelectedValuePath="Id" />
+        <Label
+            Grid.Row="3"
+            Grid.Column="2"
+            Margin="0,0,0,12"
+            Content="CDISC Term:"
+            Style="{StaticResource DetailLabel}" />
+        <ComboBox
+            Grid.Row="3"
+            Grid.Column="3"
+            Margin="0,0,0,12"
+            DisplayMemberPath="Display"
+            ItemsSource="{Binding CdiscTests}"
+            SelectedValue="{Binding LabTest.CdiscTestNameId, Mode=TwoWay}"
+            SelectedValuePath="Id" />
         <StackPanel
             Grid.Row="5"
             Grid.ColumnSpan="2"
             Margin="0,5,0,0"
             Orientation="Horizontal">
-            <rad:RadButton
-                Width="70"
-                Command="{Binding SaveCommand}"
-                Content="Save" />
-            <rad:RadButton
-                Width="70"
-                Command="{Binding DeleteCommand}"
-                Content="Delete" />
+            <rad:RadButton Width="70" Command="{Binding SaveCommand}">
+                <rad:RadButton.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <icons:PackIconMaterialLight Kind="ContentSave" />
+                        <TextBlock Margin="5,0,0,0" Text="Save" />
+                    </StackPanel>
+                </rad:RadButton.Content>
+            </rad:RadButton>
+            <rad:RadButton Width="70" Command="{Binding DeleteCommand}">
+                <rad:RadButton.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <icons:PackIconForkAwesome Kind="TrashOutline" />
+                        <TextBlock Margin="5,0,0,0" Text="Delete" />
+                    </StackPanel>
+                </rad:RadButton.Content>
+            </rad:RadButton>
         </StackPanel>
-        <rad:RadTabControl Grid.Row="4" Grid.ColumnSpan="2">
+        <rad:RadTabControl Grid.Row="4" Grid.ColumnSpan="5">
             <rad:RadTabItem Header="Reference Ranges">
                 <DockPanel Grid.Row="4" Grid.ColumnSpan="2">
                     <StackPanel DockPanel.Dock="Left">
                         <rad:RadButton
-                            Width="70"
+                            Width="40"
                             Command="{Binding AddReferenceRangeCommand}"
-                            Content="Add" />
+                            ToolTip="Add a new range">
+                            <rad:RadButton.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <icons:PackIconFeatherIcons HorizontalAlignment="Center" Kind="PlusCircle" />
+                                </StackPanel>
+                            </rad:RadButton.Content>
+                        </rad:RadButton>
                         <rad:RadButton
-                            Width="70"
+                            Width="40"
                             Command="{Binding RemoveReferenceRangeCommand}"
-                            Content="Remove" />
+                            ToolTip="Remove selected range">
+                            <rad:RadButton.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <icons:PackIconTypicons Kind="DeleteOutline" />
+                                </StackPanel>
+                            </rad:RadButton.Content>
+                        </rad:RadButton>
                     </StackPanel>
                     <DataGrid
                         Margin="0,0,10,10"
                         AutoGenerateColumns="False"
                         ItemsSource="{Binding ReferenceRanges}"
-                        SelectedItem="{Binding SelectedReferenceRange, Mode=TwoWay}"
+                        SelectedItem="{Binding SelectedReferenceRange, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         SelectionMode="Single"
-                        SelectionUnit="CellOrRowHeader">
+                        SelectionUnit="FullRow">
                         <DataGrid.Columns>
                             <DataGridComboBoxColumn
-                                Width="70"
+                                Width="100"
                                 Header="Sex"
                                 ItemsSource="{Binding Source={util:EnumBindingExtension {x:Type model:Sex}}}"
                                 SelectedItemBinding="{Binding Sex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                            <DataGridTextColumn Binding="{Binding LLN, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="LLN" />
-                            <DataGridTextColumn Binding="{Binding ULN, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="ULN" />
+                            <DataGridTextColumn
+                                Width="100"
+                                Binding="{Binding LLN, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Header="Lower Limit" />
+                            <DataGridTextColumn
+                                Width="100"
+                                Binding="{Binding ULN, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Header="Upper Limit" />
                         </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>
@@ -114,14 +187,20 @@
             <rad:RadTabItem Header="Conversions">
                 <DockPanel Grid.Row="4" Grid.ColumnSpan="2">
                     <StackPanel DockPanel.Dock="Left">
-                        <rad:RadButton
-                            Width="70"
-                            Command="{Binding AddConversionCommand}"
-                            Content="Add" />
-                        <rad:RadButton
-                            Width="70"
-                            Command="{Binding RemoveConversionCommand}"
-                            Content="Remove" />
+                        <rad:RadButton Width="40" Command="{Binding AddConversionCommand}">
+                            <rad:RadButton.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <icons:PackIconFeatherIcons HorizontalAlignment="Center" Kind="PlusCircle" />
+                                </StackPanel>
+                            </rad:RadButton.Content>
+                        </rad:RadButton>
+                        <rad:RadButton Width="40" Command="{Binding RemoveConversionCommand}">
+                            <rad:RadButton.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <icons:PackIconTypicons Kind="DeleteOutline" />
+                                </StackPanel>
+                            </rad:RadButton.Content>
+                        </rad:RadButton>
                     </StackPanel>
                     <DataGrid
                         Margin="0,0,10,10"
@@ -130,14 +209,34 @@
                         SelectedItem="{Binding SelectedConversion, Mode=TwoWay}"
                         SelectionMode="Single"
                         SelectionUnit="CellOrRowHeader">
+
                         <DataGrid.Columns>
+                            <DataGridTemplateColumn Width="125" Header="From Unit">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ComboBox
+                                            DisplayMemberPath="Display"
+                                            ItemsSource="{Binding DataContext.Units, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            SelectedValue="{Binding UnitFromId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                            SelectedValuePath="Id" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Width="125" Header="To Unit">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ComboBox
+                                            DisplayMemberPath="Display"
+                                            ItemsSource="{Binding DataContext.Units, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            SelectedValue="{Binding UnitToId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                            SelectedValuePath="Id" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                             <DataGridTextColumn
-                                Binding="{Binding FromUnit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                EditingElementStyle="{StaticResource DataGridEditingColumnStyle}"
-                                ElementStyle="{StaticResource DataGridColumnStyle}"
-                                Header="From Unit" />
-                            <DataGridTextColumn Binding="{Binding ToUnit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="To Unit" />
-                            <DataGridTextColumn Binding="{Binding ConFac, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Factor" />
+                                Width="125"
+                                Binding="{Binding ConFac, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Header="Factor" />
                         </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>

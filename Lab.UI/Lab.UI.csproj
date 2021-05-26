@@ -5,10 +5,14 @@
     <UseWPF>true</UseWPF>
     <RootNamespace>Lab.UI</RootNamespace>
     <EnableDefaultItems>False</EnableDefaultItems>
+    <ApplicationIcon>w.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="6.2.0" />
+    <PackageReference Include="ClosedXML" Version="0.95.4" />
+    <PackageReference Include="MahApps.Metro" Version="2.4.5" />
+    <PackageReference Include="MahApps.Metro.IconPacks" Version="4.8.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.15">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -21,6 +25,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.1.15" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.15" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.15" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Prism.Core" Version="8.0.0.1909" />
     <PackageReference Include="Telerik.UI.for.Wpf.NetCore.Xaml" Version="2021.1.325" />
   </ItemGroup>
@@ -53,6 +58,7 @@
     <DependentUpon>App.xaml</DependentUpon>
     <SubType>Code</SubType>
   </Compile>
+  <Compile Include="Converters\HasChangesConverter.cs" />
   <Compile Include="Data\Lookups\ILookupDataService.cs" />
   <Compile Include="Data\Respository\GenericRespository.cs" />
   <Compile Include="Data\Respository\IGenericRespository.cs" />
@@ -66,10 +72,13 @@
     <DependentUpon>MainWindow.xaml</DependentUpon>
     <SubType>Code</SubType>
   </Compile>
-  <Compile Include="ModelWrapper\LabTestRefernceRangeWrapper.cs" />
+  <Compile Include="ModelWrapper\LabTestConversionsModelWrapper.cs" />
+  <Compile Include="ModelWrapper\LabTestReferenceRangeWrapper.cs" />
   <Compile Include="ModelWrapper\LabTestWrapper.cs" />
   <Compile Include="ModelWrapper\NotifyDataErrorInfoBase.cs" />
   <Compile Include="ModelWrapper\Wrapper.cs" />
+  <Compile Include="Services\Destination.cs" />
+  <Compile Include="Services\ExportData.cs" />
   <Compile Include="Startup\Bootstrapper.cs" />
   <Compile Include="Utility\EnumBindingExtension.cs" />
   <Compile Include="Utility\IMessageService.cs" />
@@ -89,6 +98,7 @@
   
   <ItemGroup>
     <Content Include="appsettings.json" />
+    <Content Include="w.ico" />
   </ItemGroup>
   
   <ItemGroup>
