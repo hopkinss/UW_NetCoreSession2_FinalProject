@@ -38,8 +38,6 @@ namespace Lab.UI.ViewModel
             ExportCommand = new DelegateCommand<string>(OnExportExecute);
         }
 
-
-
         public ILabTestViewModel LabTestViewModel { get; }
         public ICommand CreateNewDetailCommand { get; }
         public ICommand ExportCommand { get; }

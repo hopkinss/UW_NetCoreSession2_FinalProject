@@ -33,7 +33,7 @@
                              CommandParameter="{x:Type viewmodel:LabTestDetailViewModel}">
                 <rad:RadMenuItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <icons:PackIconUnicons Kind="Flask" />
+                        <icons:PackIconMaterial Kind="FlaskEmptyPlusOutline"   />
                         <TextBlock Margin="5,0,0,0" Text="New Analyte" />
                     </StackPanel>
                 </rad:RadMenuItem.Header>
@@ -48,7 +48,7 @@
                 <rad:RadMenuItem Command="{Binding ExportCommand}"  CommandParameter="json">
                     <rad:RadMenuItem.Header>
                         <StackPanel Orientation="Horizontal">
-                            <icons:PackIconMaterial Kind="CodeJson" />
+                            <icons:PackIconMaterial Kind="CodeJson" Foreground="Goldenrod" />
                             <TextBlock Margin="5,0,0,0" Text="Send to JSON" />
                         </StackPanel>
                     </rad:RadMenuItem.Header>
@@ -56,7 +56,7 @@
                 <rad:RadMenuItem Command="{Binding ExportCommand}" CommandParameter="xlsx">
                     <rad:RadMenuItem.Header>
                         <StackPanel Orientation="Horizontal">
-                            <icons:PackIconFileIcons Kind="Excel" />
+                            <icons:PackIconFileIcons Kind="Excel" Foreground="Green" />
                             <TextBlock Margin="5,0,0,0" Text="Send to Excel" />
                         </StackPanel>
                     </rad:RadMenuItem.Header>

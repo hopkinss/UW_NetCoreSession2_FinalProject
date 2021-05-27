@@ -45,8 +45,6 @@ namespace Lab.UI.ModelWrapper
                 SetValue(value);
             }
         }
-
-
         public int? CdiscTestId
         {
             get { return GetValue<int?>(); }
@@ -68,17 +66,16 @@ namespace Lab.UI.ModelWrapper
         {
             switch (propertyName)
             {
-                case nameof(TestName):
-                    //TODO: add unique check
-                    if (string.Equals(TestName, "err", StringComparison.OrdinalIgnoreCase))
+                case nameof(Category):
+                    if ((int)Category < 0)
                     {
-                        yield return "TODO";
+                        yield return "You must select a category";
                     }
                     break;
                 case nameof(Specimen):
                     if ((int)Specimen < 0)
                     {
-                        yield return "You must select a speciment type";
+                        yield return "You must select a specimen type";
                     }
                     break;
                 default:

@@ -128,7 +128,7 @@
             <rad:RadButton Width="70" Command="{Binding DeleteCommand}">
                 <rad:RadButton.Content>
                     <StackPanel Orientation="Horizontal">
-                        <icons:PackIconForkAwesome Kind="TrashOutline" />
+                        <icons:PackIconMaterial Kind="FlaskEmptyRemoveOutline" />
                         <TextBlock Margin="5,0,0,0" Text="Delete" />
                     </StackPanel>
                 </rad:RadButton.Content>
@@ -154,7 +154,7 @@
                             ToolTip="Remove selected range">
                             <rad:RadButton.Content>
                                 <StackPanel Orientation="Horizontal">
-                                    <icons:PackIconTypicons Kind="DeleteOutline" />
+                                    <icons:PackIconTypicons Kind="DeleteOutline" Foreground="Red" Opacity=".8"/>
                                 </StackPanel>
                             </rad:RadButton.Content>
                         </rad:RadButton>
@@ -197,7 +197,7 @@
                         <rad:RadButton Width="40" Command="{Binding RemoveConversionCommand}">
                             <rad:RadButton.Content>
                                 <StackPanel Orientation="Horizontal">
-                                    <icons:PackIconTypicons Kind="DeleteOutline" />
+                                    <icons:PackIconTypicons Kind="DeleteOutline" Foreground="Red" Opacity=".8"/>
                                 </StackPanel>
                             </rad:RadButton.Content>
                         </rad:RadButton>
@@ -208,7 +208,7 @@
                         ItemsSource="{Binding Conversions}"
                         SelectedItem="{Binding SelectedConversion, Mode=TwoWay}"
                         SelectionMode="Single"
-                        SelectionUnit="CellOrRowHeader">
+                        SelectionUnit="FullRow">
 
                         <DataGrid.Columns>
                             <DataGridTemplateColumn Width="125" Header="From Unit">

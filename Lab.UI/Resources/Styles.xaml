@@ -82,6 +82,7 @@
 
     <Style x:Key="DetailLabel" TargetType="{x:Type Label}">
         <Setter Property="Foreground" Value="#0096FF"/>
+        <Setter Property="FontSize" Value="14"/>
     </Style>
     <Style TargetType="rad:RadMenu">
         <Setter Property="Background" Value="White"/>
